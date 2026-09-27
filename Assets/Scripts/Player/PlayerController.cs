@@ -77,10 +77,10 @@ public class PlayerController : MonoBehaviour
     public void SetControlsEnabled(bool enabled)
     {
         controlsEnabled = enabled;
-        rb.isKinematic = !enabled;
         if (!enabled)
         {
             rb.linearVelocity = Vector3.zero;
         }
+        rb.isKinematic = !enabled;
     }
 }
