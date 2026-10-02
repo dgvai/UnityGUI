@@ -35,6 +35,10 @@ public static class GameSceneBuilder
         gameManagerGO.AddComponent<GameManager>();
         Undo.RegisterCreatedObjectUndo(gameManagerGO, "Build Game Scene");
 
+        GameObject scoreManagerGO = new GameObject("ScoreManager");
+        scoreManagerGO.AddComponent<ScoreManager>();
+        Undo.RegisterCreatedObjectUndo(scoreManagerGO, "Build Game Scene");
+
         SegmentPlan[] plan =
         {
             new SegmentPlan(moving: false, obstacle: false, gapBefore: false),

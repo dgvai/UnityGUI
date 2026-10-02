@@ -4,6 +4,8 @@ using UnityEngine;
 /// Tracks how far the player has traveled and exposes it as a score.
 /// UI-agnostic by design: attach a small display script (TMP or legacy Text) that
 /// reads Score / subscribes to ScoreChanged to show it on screen.
+/// Runs before other scripts so Instance is ready by the time UI scripts enable.
+[DefaultExecutionOrder(-100)]
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance { get; private set; }

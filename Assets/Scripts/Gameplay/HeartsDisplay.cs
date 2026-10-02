@@ -1,11 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-/// Binds a row of heart icon GameObjects to GameManager's lives count.
-/// Attach to any object in your HUD, then drag your heart icons (one per starting life)
-/// into heartIcons in slot order. Each icon is shown while its index is within current lives.
+/// Binds a row of heart Images to GameManager's lives.
+/// Drag your heart Images (left to right) into heartImages, and your Full/Empty sprites into the sprite slots.
+/// Heart i shows fullHeart while i < current lives, otherwise emptyHeart.
+/// Hearts beyond the max lives for the chosen difficulty are hidden.
+/// Put this on an object that stays active (e.g. the Canvas), not on one of the hearts.
 public class HeartsDisplay : MonoBehaviour
 {
-    [SerializeField] private GameObject[] heartIcons;
+    [SerializeField] private Image[] heartImages;
+    [SerializeField] private Sprite fullHeart;
+    [SerializeField] private Sprite emptyHeart;
 
     private void OnEnable()
     {
@@ -26,12 +31,16 @@ public class HeartsDisplay : MonoBehaviour
 
     private void HandleLivesChanged(int current, int max)
     {
-        for (int i = 0; i < heartIcons.Length; i++)
+        for (int i = 0; i < heartImages.Length; i++)
         {
-            if (heartIcons[i] != null)
+            Image heart = heartImages[i];
+            if (heart == null)
             {
-                heartIcons[i].SetActive(i < current);
+                continue;
             }
+
+            heart.gameObject.SetActive(i < max);
+            heart.sprite = i < current ? fullHeart : emptyHeart;
         }
     }
 }
