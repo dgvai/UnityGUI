@@ -2,15 +2,29 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// Binds a row of heart Images to GameManager's lives.
-/// Drag your heart Images (left to right) into heartImages, and your Full/Empty sprites into the sprite slots.
-/// Heart i shows fullHeart while i < current lives, otherwise emptyHeart.
+/// Set each Image to the EMPTY heart sprite in the editor, then drag the Images (left to right) into heartImages
+/// and the full-heart sprite into fullHeart. Each Image remembers its own starting sprite as its "empty" look.
+/// Heart i shows fullHeart while i < current lives, otherwise its empty sprite.
 /// Hearts beyond the max lives for the chosen difficulty are hidden.
 /// Put this on an object that stays active (e.g. the Canvas), not on one of the hearts.
 public class HeartsDisplay : MonoBehaviour
 {
     [SerializeField] private Image[] heartImages;
     [SerializeField] private Sprite fullHeart;
-    [SerializeField] private Sprite emptyHeart;
+
+    private Sprite[] emptySprites;
+
+    private void Awake()
+    {
+        emptySprites = new Sprite[heartImages.Length];
+        for (int i = 0; i < heartImages.Length; i++)
+        {
+            if (heartImages[i] != null)
+            {
+                emptySprites[i] = heartImages[i].sprite;
+            }
+        }
+    }
 
     private void OnEnable()
     {
@@ -40,7 +54,7 @@ public class HeartsDisplay : MonoBehaviour
             }
 
             heart.gameObject.SetActive(i < max);
-            heart.sprite = i < current ? fullHeart : emptyHeart;
+            heart.sprite = i < current ? fullHeart : emptySprites[i];
         }
     }
 }

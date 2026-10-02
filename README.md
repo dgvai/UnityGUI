@@ -21,12 +21,9 @@ The **gameplay is finished**; the **UI is not**. Over the course you will build 
 | # | You learn | You build | Hook you use |
 |---|-----------|-----------|--------------|
 | 1 | Canvas, TextMeshPro, wiring a script to a UI object | Live score text | `ScoreManager` |
-| 2 | Image, Sprite, anchoring | Row of hearts (full / empty) | `HeartsDisplay` (ready-made), `GameManager.LivesChanged` |
+| 2 | Image, Sprite, anchoring | Row of hearts (starts empty, script fills them) | `HeartsDisplay` (ready-made), `GameManager.LivesChanged` |
 | 3 | Button, Event System, `OnClick` | Game-over modal with **Restart** and **Main Menu** | `GameOverPanel` (ready-made), `GameManager.RestartLevel`, `GameManager.LoadMainMenu` |
 | 4 | Multiple scenes, Dropdown, InputField | `MainMenu` scene: name, difficulty, Start | `MainMenuController`, `GameSession` |
-
-In lesson 1 the instructor writes the script live. From lesson 2 on the scripts are provided and you only
-connect them to your UI in the Inspector.
 
 ## Hook reference
 
@@ -55,20 +52,22 @@ A `ScoreManager` object is already in `GameScene`. Score = whole meters travelle
 Inspector fields on the `GameManager` object: `Easy Lives`, `Hard Lives`, `Invulnerability Duration`,
 `Allow Keyboard Restart` (off, so only your button restarts), `Main Menu Scene Name`.
 
-### `HeartsDisplay` (`Assets/Scripts/Gameplay/HeartsDisplay.cs`) – ready-made
-Add it to an object that stays active (e.g. the Canvas). Fill in:
+### `HeartsDisplay` (`Assets/Scripts/Gameplay/HeartsDisplay.cs`)
+Set each heart `Image` to the **empty** heart sprite in the editor first. Then add the script to an object that stays
+active (e.g. the Canvas) and fill in:
 - `Heart Images` – your heart `Image` objects, left to right
-- `Full Heart` / `Empty Heart` – the two sprites
+- `Full Heart` – the full-heart sprite
 
-Heart *i* shows the full sprite while *i < lives*, otherwise the empty sprite. Hearts beyond the difficulty's
-max lives are hidden (so on Hard the third heart disappears).
+Each Image remembers the sprite it started with as its empty look. Heart *i* shows `Full Heart` while *i < lives*,
+otherwise its own empty sprite. Hearts beyond the difficulty's max lives are hidden (so on Hard the third heart
+disappears).
 
-### `GameOverPanel` (`Assets/Scripts/Gameplay/GameOverPanel.cs`) – ready-made
+### `GameOverPanel` (`Assets/Scripts/Gameplay/GameOverPanel.cs`)
 Add it to an object that stays active (e.g. the Canvas) and drag your panel into `Panel Root`.
 The panel is hidden at start and shown on game over.
 **Do not put this script on the panel itself** – a hidden object cannot show itself again.
 
-### `MainMenuController` (`Assets/Scripts/UI/MainMenuController.cs`) – ready-made
+### `MainMenuController` (`Assets/Scripts/UI/MainMenuController.cs`)
 
 | Method | Wire it to | Notes |
 |--------|-----------|-------|
@@ -150,12 +149,15 @@ Pattern to remember: **subscribe in `OnEnable`, unsubscribe in `OnDisable`, then
 
 1. Import the heart art. Select both textures and set *Texture Type* to **Sprite (2D and UI)** (then *Apply*).
 2. Under the Canvas create an empty object `Hearts`, then three *UI > Image* children.
-3. Set the **anchor** of `Hearts` to **top-left** (Anchor Presets, hold *Alt+Shift* to also move the pivot/position),
+3. Set the **Source Image** of all three Images to the **EmptyHeart** sprite. You can already see three empty hearts
+   in the Game view.
+4. Set the **anchor** of `Hearts` to **top-left** (Anchor Presets, hold *Alt+Shift* to also move the pivot/position),
    and the score text to **top-right**. Switch the Game view between resolutions (e.g. 16:9, 4:3, portrait)
    and watch the UI stay in its corner. Optionally add a *Horizontal Layout Group* to space the hearts.
-4. Add the provided `HeartsDisplay` to the Canvas. Drag the three Images into `Heart Images` (left to right),
-   `FullHeart` into `Full Heart`, and `EmptyHeart` into `Empty Heart`.
-5. Play and hit an obstacle: a full heart becomes empty. (After lesson 4, starting on Hard hides the third heart.)
+5. Add the provided `HeartsDisplay` to the Canvas. Drag the three Images into `Heart Images` (left to right) and
+   `FullHeart` into `Full Heart`.
+6. Play: the hearts fill up to your lives, and hitting an obstacle turns one back to empty.
+   (After lesson 4, starting on Hard hides the third heart.)
 
 ## Lesson 3 – Buttons and the Event System: game-over modal
 
