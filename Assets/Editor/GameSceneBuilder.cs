@@ -69,6 +69,7 @@ public static class GameSceneBuilder
         GameObject player = BuildPlayer();
 
         BuildVoidZone(cursor.z);
+        BuildFinishLine(cursor.z);
 
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
@@ -144,6 +145,16 @@ public static class GameSceneBuilder
 
         Undo.RegisterCreatedObjectUndo(player, "Build Game Scene");
         return player;
+    }
+
+    private static void BuildFinishLine(float levelLength)
+    {
+        GameObject finish = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        finish.name = "FinishLine";
+        finish.transform.position = new Vector3(0f, 1.5f, levelLength - 0.5f);
+        finish.transform.localScale = new Vector3(SegmentWidth, 3f, 1f);
+        finish.AddComponent<FinishLine>();
+        Undo.RegisterCreatedObjectUndo(finish, "Build Game Scene");
     }
 
     private static void BuildVoidZone(float levelLength)

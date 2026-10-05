@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public int Lives { get; private set; }
     public int MaxLives { get; private set; }
     public bool IsGameOver { get; private set; }
+    public bool IsWon { get; private set; }
     public Difficulty CurrentDifficulty { get; private set; }
 
     /// Fired whenever lives change, with (current, max). Useful for a heart-row UI.
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
 
     /// Fired when the game ends, with true. Useful for showing a restart button/panel.
     public event Action<bool> GameOverStateChanged;
+
+    /// Fired when the player reaches the finish line, with true. Useful for showing a "You Win" panel.
+    public event Action<bool> GameWonStateChanged;
 
     private PlayerController player;
     private Vector3 respawnPosition;
@@ -72,7 +76,7 @@ public class GameManager : MonoBehaviour
     /// Called by obstacles and the void zone whenever the player is hit or falls.
     public void RegisterHit()
     {
-        if (IsGameOver || Time.time < invulnerableUntil)
+        if (IsGameOver || IsWon || Time.time < invulnerableUntil)
         {
             return;
         }
@@ -112,6 +116,25 @@ public class GameManager : MonoBehaviour
         }
 
         GameOverStateChanged?.Invoke(true);
+    }
+
+    /// Called by FinishLine when the player reaches the end of the level.
+    public void WinGame()
+    {
+        if (IsGameOver || IsWon)
+        {
+            return;
+        }
+
+        IsWon = true;
+        Debug.Log("You Win!");
+
+        if (player != null)
+        {
+            player.SetControlsEnabled(false);
+        }
+
+        GameWonStateChanged?.Invoke(true);
     }
 
     /// Public so a Restart button's OnClick can call it directly.
